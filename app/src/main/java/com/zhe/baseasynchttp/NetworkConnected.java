@@ -10,6 +10,7 @@ import java.util.Map;
  * Created by zhe on 2016/6/5.
  */
 public class NetworkConnected {
+
     private static AsyncHttpClient httpClient;
     private String url;
     private RequestParams params;
