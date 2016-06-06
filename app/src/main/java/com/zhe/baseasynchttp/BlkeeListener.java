@@ -13,7 +13,7 @@ import cz.msebera.android.httpclient.Header;
 public interface BlkeeListener {
     String getBaseUrl();
     String getRequestUrl();
-    float setTimeOut();
+    int setTimeOut();
     HttpMethod getRequestMethod();
     Header[] getHeader();
     Map<String,String> getRequestParams();
@@ -22,4 +22,6 @@ public interface BlkeeListener {
     void getResponseJSONArray(JSONArray jsonArray);
     void getResponseStatus(int statusCode);
     void getResponseError(Throwable error);
+    void handleResponseResult(Object object);
+    void getResponseBinary(byte[] binaryData);
 }

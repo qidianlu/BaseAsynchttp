@@ -3,7 +3,6 @@ package com.zhe.baseasynchttp;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 
-import java.security.Policy;
 import java.util.Map;
 
 /**
@@ -25,6 +24,8 @@ public class NetworkConnected {
     }
 
     public void request(BlkeeListener blkeeListener){
+
+        httpClient.setTimeout(blkeeListener.setTimeOut());
 
         url = blkeeListener.getBaseUrl()+blkeeListener.getRequestUrl();
         Map<String,String> map = blkeeListener.getRequestParams();
@@ -48,6 +49,17 @@ public class NetworkConnected {
                 httpClient.head(url,params,responseHandler);
                 break;
         }
+    }
+
+    public void binaryRequest(BlkeeListener blkeeListener){
+
+        httpClient.setTimeout(blkeeListener.setTimeOut());
+
+        url = blkeeListener.getRequestUrl();
+
+        BlkeeBinaryHandlerInterface binaryHandler = new BlkeeBinaryHandlerInterface(blkeeListener);
+
+        httpClient.get(url,binaryHandler);
     }
 
 }
