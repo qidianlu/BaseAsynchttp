@@ -3,7 +3,11 @@ package com.zhe.baseasynchttp;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 
+import org.json.JSONObject;
+
 import java.util.Map;
+
+import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by zhe on 2016/6/5.
@@ -23,16 +27,32 @@ public class NetworkConnected {
         return networkConnected;
     }
 
-    public void request(BlkeeListener blkeeListener){
+    public void jsonRequest(final BlkeeHttpInterface blkeeHttpInterface){
 
-        httpClient.setTimeout(blkeeListener.setTimeOut());
+        httpClient.setTimeout(blkeeHttpInterface.setTimeOut());
 
-        url = blkeeListener.getBaseUrl()+blkeeListener.getRequestUrl();
-        Map<String,String> map = blkeeListener.getRequestParams();
+        url = blkeeHttpInterface.getBaseUrl()+ blkeeHttpInterface.getRequestUrl();
+        Map<String,String> map = getParams(blkeeHttpInterface);
         params = new RequestParams(map);
-        BlkeeResponseHandlerInterface responseHandler = new BlkeeResponseHandlerInterface(blkeeListener);
+        BlkeeResponseHandlerInterface responseHandler = new BlkeeResponseHandlerInterface(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                blkeeHttpInterface.responseStatus(statusCode);
+                blkeeHttpInterface.responseHeader(headers);
+                blkeeHttpInterface.responseJSONObject(response);
+            }
 
-        switch (blkeeListener.getRequestMethod()){
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                blkeeHttpInterface.responseStatus(statusCode);
+                blkeeHttpInterface.responseError(throwable);
+                blkeeHttpInterface.responseHeader(headers);
+            }
+        };
+
+        switch (blkeeHttpInterface.getRequestMethod()){
             case REQUEST_HTTP_GET:
                 httpClient.get(url,params,responseHandler);
                 break;
@@ -51,15 +71,20 @@ public class NetworkConnected {
         }
     }
 
-    public void binaryRequest(BlkeeListener blkeeListener){
+    public void binaryRequest(BlkeeHttpInterface blkeeHttpInterface){
 
-        httpClient.setTimeout(blkeeListener.setTimeOut());
+        httpClient.setTimeout(blkeeHttpInterface.setTimeOut());
 
-        url = blkeeListener.getRequestUrl();
+        url = blkeeHttpInterface.getRequestUrl();
 
-        BlkeeBinaryHandlerInterface binaryHandler = new BlkeeBinaryHandlerInterface(blkeeListener);
+        BlkeeBinaryHandlerInterface binaryHandler = new BlkeeBinaryHandlerInterface(blkeeHttpInterface);
 
         httpClient.get(url,binaryHandler);
+    }
+
+    private Map<String,String> getParams(BlkeeHttpInterface blkeeHttpInterface){
+        Map<String,String > params = blkeeHttpInterface.getRequestParams();
+        return params;
     }
 
 }

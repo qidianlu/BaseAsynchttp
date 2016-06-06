@@ -8,24 +8,24 @@ import cz.msebera.android.httpclient.Header;
  * Created by zhangyr on 2016/6/5.
  */
 public class BlkeeBinaryHandlerInterface extends BinaryHttpResponseHandler{
-    BlkeeListener blkeeListener;
+    BlkeeHttpInterface blkeeHttpInterface;
 
-    public BlkeeBinaryHandlerInterface(BlkeeListener blkeeListener){
-        this.blkeeListener = blkeeListener;
+    public BlkeeBinaryHandlerInterface(BlkeeHttpInterface blkeeHttpInterface){
+        this.blkeeHttpInterface = blkeeHttpInterface;
     }
 
     @Override
     public void onSuccess(int statusCode, Header[] headers, byte[] binaryData) {
-        blkeeListener.getResponseHeader(headers);
-        blkeeListener.getResponseBinary(binaryData);
-        blkeeListener.getResponseStatus(statusCode);
+        blkeeHttpInterface.responseHeader(headers);
+        blkeeHttpInterface.responseBinary(binaryData);
+        blkeeHttpInterface.responseStatus(statusCode);
     }
 
     @Override
     public void onFailure(int statusCode, Header[] headers, byte[] binaryData, Throwable error) {
-        blkeeListener.getResponseHeader(headers);
-        blkeeListener.getResponseStatus(statusCode);
-        blkeeListener.getResponseError(error);
+        blkeeHttpInterface.responseHeader(headers);
+        blkeeHttpInterface.responseStatus(statusCode);
+        blkeeHttpInterface.responseError(error);
 
     }
 }

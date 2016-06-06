@@ -22,8 +22,8 @@ public class BlkeeHttpRequest extends BaseRequest{
     protected int responseResultCode;
 
     @Override
-    public void getResponseJSONObject(JSONObject jsonObject) {
-        super.getResponseJSONObject(jsonObject);
+    public void responseJSONObject(JSONObject jsonObject) {
+        super.responseJSONObject(jsonObject);
 
         if(error != null){
             return;
@@ -46,18 +46,18 @@ public class BlkeeHttpRequest extends BaseRequest{
     }
 
     @Override
-    public void getResponseError(Throwable error) {
-        super.getResponseError(error);
+    public void responseError(Throwable error) {
+        super.responseError(error);
 
     }
 
     @Override
-    public void getResponseHeader(Header[] headers) {
-        super.getResponseHeader(headers);
+    public void responseHeader(Header[] headers) {
+        super.responseHeader(headers);
     }
 
     @Override
-    public void getResponseStatus(int statusCode) {
-        super.getResponseStatus(statusCode);
+    public void responseStatus(int statusCode) {
+        super.responseStatus(statusCode);
     }
 }

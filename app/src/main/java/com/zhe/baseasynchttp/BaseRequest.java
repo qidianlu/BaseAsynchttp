@@ -10,7 +10,7 @@ import cz.msebera.android.httpclient.Header;
 /**
  * Created by zhe on 2016/6/5.
  */
-public class BaseRequest implements BlkeeListener{
+public class BaseRequest implements BlkeeHttpInterface {
     protected Throwable error;
     private int statusCode;
 
@@ -46,12 +46,12 @@ public class BaseRequest implements BlkeeListener{
     }
 
     @Override
-    public void getResponseHeader(Header[] headers) {
+    public void responseHeader(Header[] headers) {
 
     }
 
     @Override
-    public void getResponseJSONObject(JSONObject jsonObject) {
+    public void responseJSONObject(JSONObject jsonObject) {
 
     }
 
@@ -61,12 +61,12 @@ public class BaseRequest implements BlkeeListener{
     }
 
     @Override
-    public void getResponseStatus(int statusCode) {
+    public void responseStatus(int statusCode) {
         this.statusCode = statusCode;
     }
 
     @Override
-    public void getResponseError(Throwable error) {
+    public void responseError(Throwable error) {
         if(error!=null){
             this.error = error;
         }
@@ -78,7 +78,7 @@ public class BaseRequest implements BlkeeListener{
     }
 
     @Override
-    public void getResponseBinary(byte[] binaryData) {
+    public void responseBinary(byte[] binaryData) {
 
     }
 }
