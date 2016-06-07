@@ -1,6 +1,5 @@
 package com.zhe.baseasynchttp;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.Map;
@@ -10,10 +9,9 @@ import cz.msebera.android.httpclient.Header;
 /**
  * Created by zhe on 2016/6/5.
  */
-public class BaseRequest implements BlkeeHttpInterface {
+public class LDBaseRequest implements BlkeeHttpInterface {
     protected Throwable error;
-    private int statusCode;
-
+    protected HttpStatusCode statusCode;
 
     @Override
     public String getBaseUrl() {
@@ -51,18 +49,23 @@ public class BaseRequest implements BlkeeHttpInterface {
     }
 
     @Override
-    public void responseJSONObject(JSONObject jsonObject) {
-
-    }
-
-    @Override
-    public void getResponseJSONArray(JSONArray jsonArray) {
+    public void responseJSONObject(JSONObject jsonObject, BlkeeHttpManagerListener listener) {
 
     }
 
     @Override
     public void responseStatus(int statusCode) {
-        this.statusCode = statusCode;
+        if(200<=statusCode&&statusCode<300){
+            this.statusCode = HttpStatusCode.STATUS_SUCCESS;
+        }else if(300<=statusCode&&statusCode<400){
+            this.statusCode = HttpStatusCode.STATUS_MULTIPLE_CHOICE;
+        }else if(400<=statusCode&&statusCode<500){
+            this.statusCode = HttpStatusCode.STATUS_BAS_REQUEST;
+        }else if(500<=statusCode&&statusCode<=510){
+            this.statusCode = HttpStatusCode.STATUS_SERVER_ERROR;
+        }else{
+            this.statusCode = HttpStatusCode.STATUS_UNKNOWN;
+        }
     }
 
     @Override
@@ -78,7 +81,13 @@ public class BaseRequest implements BlkeeHttpInterface {
     }
 
     @Override
-    public void responseBinary(byte[] binaryData) {
+    public void responseBinary(byte[] binaryData,BlkeeHttpManagerListener listener) {
 
     }
+
+    @Override
+    public void responseUpload(byte[] uploadData,BlkeeHttpManagerListener listener) {
+
+    }
+
 }

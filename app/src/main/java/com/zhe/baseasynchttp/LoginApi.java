@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * Created by zhangyr on 2016/6/5.
  */
-public class LoginApi extends BlkeeHttpRequest{
+public class LoginApi extends LDHttpRequest {
     private String password;
     private String username;
 

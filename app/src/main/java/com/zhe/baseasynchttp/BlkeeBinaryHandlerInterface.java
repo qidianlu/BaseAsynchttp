@@ -16,16 +16,12 @@ public class BlkeeBinaryHandlerInterface extends BinaryHttpResponseHandler{
 
     @Override
     public void onSuccess(int statusCode, Header[] headers, byte[] binaryData) {
-        blkeeHttpInterface.responseHeader(headers);
-        blkeeHttpInterface.responseBinary(binaryData);
-        blkeeHttpInterface.responseStatus(statusCode);
+
     }
 
     @Override
     public void onFailure(int statusCode, Header[] headers, byte[] binaryData, Throwable error) {
-        blkeeHttpInterface.responseHeader(headers);
-        blkeeHttpInterface.responseStatus(statusCode);
-        blkeeHttpInterface.responseError(error);
+
 
     }
 }

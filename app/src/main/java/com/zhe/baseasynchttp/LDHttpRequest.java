@@ -1,6 +1,7 @@
 package com.zhe.baseasynchttp;
 
-import org.json.JSONArray;
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -9,7 +10,7 @@ import cz.msebera.android.httpclient.Header;
 /**
  * Created by zhangyr on 2016/6/5.
  */
-public class BlkeeHttpRequest extends BaseRequest{
+public class LDHttpRequest extends LDBaseRequest {
     private static final String resultKey = "result";
     private static final String resultCodeKey = "result_code";
     private static final String resultMsgKey = "result_msg";
@@ -22,8 +23,8 @@ public class BlkeeHttpRequest extends BaseRequest{
     protected int responseResultCode;
 
     @Override
-    public void responseJSONObject(JSONObject jsonObject) {
-        super.responseJSONObject(jsonObject);
+    public void responseJSONObject(JSONObject jsonObject, BlkeeHttpManagerListener listener) {
+        super.responseJSONObject(jsonObject,listener);
 
         if(error != null){
             return;
@@ -32,17 +33,25 @@ public class BlkeeHttpRequest extends BaseRequest{
             responseResultCode = jsonObject.getInt(resultCodeKey);
             responseResultMsg = jsonObject.getString(resultMsgKey);
             responseResultObject = jsonObject.get(resultKey);
-
+            switch (responseResultCode){
+                case 100001:
+                    Log.e("msg","成功");
+                    break;
+                case 100002:
+                    Log.e("msg","接口缺少参数");
+                    break;
+                case 100003:
+                    Log.e("msg","token错误");
+                    break;
+                case 100004:
+                    Log.e("msg","使用post请求");
+                    break;
+            }
             handleResponseResult(responseResultObject);
         }catch (JSONException exception){
 
         }
 
-    }
-
-    @Override
-    public void getResponseJSONArray(JSONArray jsonArray) {
-        super.getResponseJSONArray(jsonArray);
     }
 
     @Override
@@ -60,4 +69,6 @@ public class BlkeeHttpRequest extends BaseRequest{
     public void responseStatus(int statusCode) {
         super.responseStatus(statusCode);
     }
+
+
 }

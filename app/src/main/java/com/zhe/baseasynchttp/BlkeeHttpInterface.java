@@ -1,6 +1,5 @@
 package com.zhe.baseasynchttp;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.Map;
@@ -18,10 +17,10 @@ public interface BlkeeHttpInterface {
     Header[] getHeader();
     Map<String,String> getRequestParams();
     void responseHeader(Header[] headers);
-    void responseJSONObject(JSONObject jsonObject);
-    void getResponseJSONArray(JSONArray jsonArray);
+    void responseJSONObject(JSONObject jsonObject,BlkeeHttpManagerListener listener);
     void responseStatus(int statusCode);
     void responseError(Throwable error);
     void handleResponseResult(Object object);
-    void responseBinary(byte[] binaryData);
+    void responseBinary(byte[] binaryData,BlkeeHttpManagerListener listener);
+    void responseUpload(byte[] uploadData,BlkeeHttpManagerListener listener);
 }

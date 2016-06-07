@@ -1,10 +1,16 @@
 package com.zhe.baseasynchttp;
 
+import android.content.Context;
+
 import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.BinaryHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Map;
 
 import cz.msebera.android.httpclient.Header;
@@ -27,7 +33,7 @@ public class NetworkConnected {
         return networkConnected;
     }
 
-    public void jsonRequest(final BlkeeHttpInterface blkeeHttpInterface){
+    public void handleRequest(Context context, final BlkeeHttpInterface blkeeHttpInterface, final BlkeeHttpManagerListener listener){
 
         httpClient.setTimeout(blkeeHttpInterface.setTimeOut());
 
@@ -40,7 +46,7 @@ public class NetworkConnected {
                 super.onSuccess(statusCode, headers, response);
                 blkeeHttpInterface.responseStatus(statusCode);
                 blkeeHttpInterface.responseHeader(headers);
-                blkeeHttpInterface.responseJSONObject(response);
+                blkeeHttpInterface.responseJSONObject(response,listener);
             }
 
             @Override
@@ -54,24 +60,24 @@ public class NetworkConnected {
 
         switch (blkeeHttpInterface.getRequestMethod()){
             case REQUEST_HTTP_GET:
-                httpClient.get(url,params,responseHandler);
+                httpClient.get(context,url,params,responseHandler);
                 break;
             case REQUEST_HTTP_POST:
-                httpClient.post(url,params,responseHandler);
+                httpClient.post(context,url,params,responseHandler);
                 break;
             case REQUEST_HTTP_PUT:
-                httpClient.put(url,params,responseHandler);
+                httpClient.put(context,url,params,responseHandler);
                 break;
             case REQUEST_HTTP_DELETE:
-                httpClient.delete(url,params,responseHandler);
+                httpClient.delete(context,url,responseHandler);
                 break;
             case REQUEST_HTTP_HEAD:
-                httpClient.head(url,params,responseHandler);
+                httpClient.head(context,url,params,responseHandler);
                 break;
         }
     }
 
-    public void binaryRequest(BlkeeHttpInterface blkeeHttpInterface){
+    public void binaryRequest(Context context,final BlkeeHttpInterface blkeeHttpInterface,final BlkeeHttpManagerListener listener){
 
         httpClient.setTimeout(blkeeHttpInterface.setTimeOut());
 
@@ -79,7 +85,50 @@ public class NetworkConnected {
 
         BlkeeBinaryHandlerInterface binaryHandler = new BlkeeBinaryHandlerInterface(blkeeHttpInterface);
 
-        httpClient.get(url,binaryHandler);
+        httpClient.get(context,url, new BinaryHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] binaryData) {
+                blkeeHttpInterface.responseHeader(headers);
+                blkeeHttpInterface.responseBinary(binaryData,listener);
+                blkeeHttpInterface.responseStatus(statusCode);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] binaryData, Throwable error) {
+                blkeeHttpInterface.responseHeader(headers);
+                blkeeHttpInterface.responseStatus(statusCode);
+                blkeeHttpInterface.responseError(error);
+            }
+        });
+    }
+
+    public void uploadFile(Context context,final BlkeeHttpInterface blkeeHttpInterface,String name,File file,String url,final BlkeeHttpManagerListener listener){
+        RequestParams params = new RequestParams();
+        try{
+            params.put(name,file);
+            httpClient.post(context,url, params, new AsyncHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                    blkeeHttpInterface.responseStatus(statusCode);
+                    blkeeHttpInterface.responseHeader(headers);
+                    blkeeHttpInterface.responseUpload(responseBody,listener);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                    blkeeHttpInterface.responseHeader(headers);
+                    blkeeHttpInterface.responseStatus(statusCode);
+                    blkeeHttpInterface.responseError(error);
+                }
+            });
+        }catch (FileNotFoundException exception){
+
+        }
+
+    }
+
+    public void httpCancle(Context context,boolean isCancle){
+        httpClient.cancelRequests(context,isCancle);
     }
 
     private Map<String,String> getParams(BlkeeHttpInterface blkeeHttpInterface){
