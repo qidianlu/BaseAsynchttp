@@ -23,8 +23,8 @@ public class LDHttpRequest extends LDBaseRequest {
     protected int responseResultCode;
 
     @Override
-    public void responseJSONObject(JSONObject jsonObject, BlkeeHttpManagerListener listener) {
-        super.responseJSONObject(jsonObject,listener);
+    public void responseJSONObject(JSONObject jsonObject) {
+        super.responseJSONObject(jsonObject);
 
         if(error != null){
             return;

@@ -23,4 +23,8 @@ public class BlkeeHttpManager {
     public void httpCancle(Context context,boolean isCancle){
         connected.httpCancle(context,isCancle);
     }
+
+    public void adv(Context context,LDBaseRequest ldbaseRequest,BlkeeHttpManagerListener listener){
+        connected.handleRequest(context,ldbaseRequest,listener);
+    }
 }

@@ -1,5 +1,7 @@
 package com.zhe.baseasynchttp;
 
+import android.util.Log;
+
 import org.json.JSONObject;
 
 import java.util.Map;
@@ -15,7 +17,20 @@ public class LDBaseRequest implements BlkeeHttpInterface {
 
     @Override
     public String getBaseUrl() {
-        return null;
+        String baseUrl ;
+        int i=0;//从文件中获取服务器地址
+        switch (i){
+            case 0:
+                baseUrl =  BlkRequestUrl.APP.getUrl();
+                break;
+            case 1:
+                baseUrl = BlkRequestUrl.TESTAPP.getUrl();
+                break;
+            default:
+                baseUrl = "";
+                break;
+        }
+        return baseUrl;
     }
 
     @Override
@@ -30,7 +45,7 @@ public class LDBaseRequest implements BlkeeHttpInterface {
 
     @Override
     public HttpMethod getRequestMethod() {
-        return null;
+        return HttpMethod.REQUEST_HTTP_POST;
     }
 
     @Override
@@ -49,7 +64,7 @@ public class LDBaseRequest implements BlkeeHttpInterface {
     }
 
     @Override
-    public void responseJSONObject(JSONObject jsonObject, BlkeeHttpManagerListener listener) {
+    public void responseJSONObject(JSONObject jsonObject) {
 
     }
 
@@ -72,6 +87,7 @@ public class LDBaseRequest implements BlkeeHttpInterface {
     public void responseError(Throwable error) {
         if(error!=null){
             this.error = error;
+            Log.e("error:",error.toString());
         }
     }
 
@@ -81,12 +97,12 @@ public class LDBaseRequest implements BlkeeHttpInterface {
     }
 
     @Override
-    public void responseBinary(byte[] binaryData,BlkeeHttpManagerListener listener) {
+    public void responseBinary(byte[] binaryData) {
 
     }
 
     @Override
-    public void responseUpload(byte[] uploadData,BlkeeHttpManagerListener listener) {
+    public void responseUpload(byte[] uploadData) {
 
     }
 

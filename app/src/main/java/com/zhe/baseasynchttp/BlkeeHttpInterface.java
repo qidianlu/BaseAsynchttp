@@ -17,10 +17,10 @@ public interface BlkeeHttpInterface {
     Header[] getHeader();
     Map<String,String> getRequestParams();
     void responseHeader(Header[] headers);
-    void responseJSONObject(JSONObject jsonObject,BlkeeHttpManagerListener listener);
+    void responseJSONObject(JSONObject jsonObject);
     void responseStatus(int statusCode);
     void responseError(Throwable error);
     void handleResponseResult(Object object);
-    void responseBinary(byte[] binaryData,BlkeeHttpManagerListener listener);
-    void responseUpload(byte[] uploadData,BlkeeHttpManagerListener listener);
+    void responseBinary(byte[] binaryData);
+    void responseUpload(byte[] uploadData);
 }

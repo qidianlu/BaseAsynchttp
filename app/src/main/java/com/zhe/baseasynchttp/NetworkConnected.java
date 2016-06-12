@@ -1,6 +1,7 @@
 package com.zhe.baseasynchttp;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -39,22 +40,21 @@ public class NetworkConnected {
 
         url = blkeeHttpInterface.getBaseUrl()+ blkeeHttpInterface.getRequestUrl();
         Map<String,String> map = getParams(blkeeHttpInterface);
+        Log.e("mapsize:",map.size()+"-------------------------");
         params = new RequestParams(map);
+        params.setUseJsonStreamer(true);
         BlkeeResponseHandlerInterface responseHandler = new BlkeeResponseHandlerInterface(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
-                blkeeHttpInterface.responseStatus(statusCode);
-                blkeeHttpInterface.responseHeader(headers);
-                blkeeHttpInterface.responseJSONObject(response,listener);
+                Log.e("response",response.toString());
+                handleSuccess(statusCode,headers,response,blkeeHttpInterface,listener);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
-                blkeeHttpInterface.responseStatus(statusCode);
-                blkeeHttpInterface.responseError(throwable);
-                blkeeHttpInterface.responseHeader(headers);
+                handleFailer(statusCode,headers,throwable,null,blkeeHttpInterface,listener);
             }
         };
 
@@ -77,6 +77,21 @@ public class NetworkConnected {
         }
     }
 
+    private void handleSuccess(int statusCode,Header[] headers,JSONObject response,BlkeeHttpInterface blkeeHttpInterface,BlkeeHttpManagerListener listener){
+        blkeeHttpInterface.responseStatus(statusCode);
+        blkeeHttpInterface.responseHeader(headers);
+        blkeeHttpInterface.responseJSONObject(response);
+        listener.run(blkeeHttpInterface);
+
+    }
+
+    private void handleFailer(int statusCode,Header[] headers,Throwable error,JSONObject response,BlkeeHttpInterface blkeeHttpInterface,BlkeeHttpManagerListener listener){
+        blkeeHttpInterface.responseStatus(statusCode);
+        blkeeHttpInterface.responseError(error);
+        blkeeHttpInterface.responseHeader(headers);
+        listener.run(blkeeHttpInterface);
+    }
+
     public void binaryRequest(Context context,final BlkeeHttpInterface blkeeHttpInterface,final BlkeeHttpManagerListener listener){
 
         httpClient.setTimeout(blkeeHttpInterface.setTimeOut());
@@ -88,18 +103,28 @@ public class NetworkConnected {
         httpClient.get(context,url, new BinaryHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] binaryData) {
-                blkeeHttpInterface.responseHeader(headers);
-                blkeeHttpInterface.responseBinary(binaryData,listener);
-                blkeeHttpInterface.responseStatus(statusCode);
+                handleBinarySuccess(statusCode,headers,binaryData,blkeeHttpInterface,listener);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] binaryData, Throwable error) {
-                blkeeHttpInterface.responseHeader(headers);
-                blkeeHttpInterface.responseStatus(statusCode);
-                blkeeHttpInterface.responseError(error);
+                handleBinaryFailer(statusCode,headers,null,error,blkeeHttpInterface,listener);
             }
         });
+    }
+
+    private void handleBinarySuccess(int statusCode,Header[] headers,byte[] binaryData,BlkeeHttpInterface blkeeHttpInterface,BlkeeHttpManagerListener listener){
+        blkeeHttpInterface.responseHeader(headers);
+        blkeeHttpInterface.responseBinary(binaryData);
+        blkeeHttpInterface.responseStatus(statusCode);
+        listener.run(blkeeHttpInterface);
+    }
+
+    private void handleBinaryFailer(int statusCode,Header[] headers,byte[] binaryData,Throwable error,BlkeeHttpInterface blkeeHttpInterface,BlkeeHttpManagerListener listener){
+        blkeeHttpInterface.responseHeader(headers);
+        blkeeHttpInterface.responseStatus(statusCode);
+        blkeeHttpInterface.responseError(error);
+        listener.run(blkeeHttpInterface);
     }
 
     public void uploadFile(Context context,final BlkeeHttpInterface blkeeHttpInterface,String name,File file,String url,final BlkeeHttpManagerListener listener){
@@ -109,16 +134,12 @@ public class NetworkConnected {
             httpClient.post(context,url, params, new AsyncHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                    blkeeHttpInterface.responseStatus(statusCode);
-                    blkeeHttpInterface.responseHeader(headers);
-                    blkeeHttpInterface.responseUpload(responseBody,listener);
+                    handleBinarySuccess(statusCode,headers,responseBody,blkeeHttpInterface,listener);
                 }
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                    blkeeHttpInterface.responseHeader(headers);
-                    blkeeHttpInterface.responseStatus(statusCode);
-                    blkeeHttpInterface.responseError(error);
+                    handleBinaryFailer(statusCode,headers,null,error,blkeeHttpInterface,listener);
                 }
             });
         }catch (FileNotFoundException exception){
