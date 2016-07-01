@@ -10,6 +10,7 @@ import cz.msebera.android.httpclient.Header;
  * Created by zhe on 2016/6/5.
  */
 public interface BlkeeHttpInterface {
+
     String getBaseUrl();
     String getRequestUrl();
     int setTimeOut();

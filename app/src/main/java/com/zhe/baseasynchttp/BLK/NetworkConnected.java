@@ -1,4 +1,4 @@
-package com.zhe.baseasynchttp;
+package com.zhe.baseasynchttp.BLK;
 
 import android.content.Context;
 import android.util.Log;
@@ -7,6 +7,10 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.BinaryHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.zhe.baseasynchttp.BlkeeBinaryHandlerInterface;
+import com.zhe.baseasynchttp.BlkeeHttpInterface;
+import com.zhe.baseasynchttp.BlkeeHttpManagerListener;
+import com.zhe.baseasynchttp.BlkeeResponseHandlerInterface;
 
 import org.json.JSONObject;
 

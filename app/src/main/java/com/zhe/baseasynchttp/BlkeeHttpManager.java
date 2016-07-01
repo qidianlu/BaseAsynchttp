@@ -2,6 +2,8 @@ package com.zhe.baseasynchttp;
 
 import android.content.Context;
 
+import com.zhe.baseasynchttp.BLK.NetworkConnected;
+
 /**
  * Created by zhangyr on 2016/6/7.
  */
